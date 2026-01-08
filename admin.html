@@ -21,7 +21,7 @@
             
             // Pusher를 통해 메시지 전송
             // (실제 서비스에서는 서버를 거치는 것이 안전합니다)
-            channel.trigger('client-send-event', {
+            channel.trigger('send-event', {
                 message: text
             });
             alert("전송 완료!");
