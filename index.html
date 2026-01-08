@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>메인 수신 페이지 (A)</title>
+    <script src="https://js.pusher.com/8.0/pusher.min.js"></script>
+</head>
+<body>
+    <h1>알람 수신 대기 중...</h1>
+    <p>이 페이지를 열어두면 관리자가 보내는 알람을 받을 수 있습니다.</p>
+    <button onclick="enableNoti()">알람 권한 허용하기</button>
+
+    <script>
+        // 1. 알람 권한 요청 함수
+        function enableNoti() {
+            Notification.requestPermission().then(permission => {
+                if (permission === 'granted') {
+                    alert('이제 알람을 받을 수 있습니다!');
+                }
+            });
+        }
+
+        // 2. Pusher 연결 설정 (복사한 Key와 Cluster를 여기에 넣으세요)
+        const pusher = new Pusher('0141d98cb9c6561678d4', {
+            cluster: 'ap3'
+        });
+
+        // 3. 'alarm-channel'이라는 통로를 구독합니다.
+        const channel = pusher.subscribe('alarm-channel');
+
+        // 4. 'send-event'라는 이름의 신호가 오면 실행합니다.
+        channel.bind('send-event', function(data) {
+            // 권한이 허용된 상태라면 알림을 띄웁니다.
+            if (Notification.permission === 'granted') {
+                new Notification("새로운 관리자 메시지", {
+                    body: data.message, // 전달받은 텍스트 내용
+                    icon: "https://via.placeholder.com/128"
+                });
+            } else {
+                alert("알람 권한이 거부되어 있습니다. 권한을 허용해주세요!");
+            }
+        });
+    </script>
+</body>
+</html>

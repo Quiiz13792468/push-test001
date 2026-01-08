@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>관리자 페이지 (B)</title>
+    <script src="https://js.pusher.com/8.0/pusher.min.js"></script>
+</head>
+<body>
+    <h1>관리자 알람 전송</h1>
+    <input type="text" id="msgInput" placeholder="알람 내용을 입력하세요">
+    <button onclick="pushAlarm()">Push 알람 보내기</button>
+
+    <script>
+        const pusher = new Pusher('0141d98cb9c6561678d4', {
+            cluster: 'ap3'
+        });
+        const channel = pusher.subscribe('alarm-channel');
+
+        function pushAlarm() {
+            const text = document.getElementById('msgInput').value;
+            
+            // Pusher를 통해 메시지 전송
+            // (실제 서비스에서는 서버를 거치는 것이 안전합니다)
+            channel.trigger('client-send-event', {
+                message: text
+            });
+            alert("전송 완료!");
+        }
+    </script>
+</body>
+</html>
